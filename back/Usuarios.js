@@ -2,6 +2,46 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const connection = require('./connection.js')
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+
+async function login(req, res) {
+    const Username = req.body.Username;
+    const Password = req.body.Password;
+
+    const sql = "SELECT * FROM Usuarios WHERE Username = ?";
+    connection.query(sql, [Username], async (err, result) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Error interno del servidor');
+            return;
+        }
+        const validacion = (result[0].Password == Password);
+        if (validacion) {
+            const user = {
+                ID: result[0].ID,
+                ESTADO: result[0].ESTADO,
+                Nombre: result[0].Nombre,
+                Apellido: result[0].Apellido,
+                Mail: result[0].Mail,
+                Username: result[0].Username
+            };
+                const token = generateToken(user);
+                const Vuelta = {
+                    mensaje: 'Usuario autenticado',
+                    token: token
+                }
+                res.setHeader('Content-Type', 'application/json');
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+                res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+                res.send(JSON.stringify(Vuelta));
+        } else {
+            res.status(350).send('Usuario o contraseña incorrectos');
+        }
+    });
+}
 
 function getUsuario(req, res){
     const ID = req.params.id;
@@ -43,10 +83,11 @@ async function addUsuario(req, res) {
     const Mail = req.body.Mail;
     const Username = req.body.Username;
     const Password = req.body.Password;
-    const validacionUsuario = await validarUsuario(0, Nombre, Apellido, Mail, Username, Password);
+    const TipoUsuario = req.body.TipoUsuario;
+    const validacionUsuario = await validarUsuario(0, Nombre, Apellido, Mail, Username, Password, TipoUsuario);
     if(validacionUsuario == true){
-        const sqlInsertUsuario = 'INSERT INTO Usuarios (Nombre, Apellido, Mail, Username, Password) VALUES (?, ?, ?, ?, ?)';
-        const values = [Nombre, Apellido, Mail, Username, Password];
+        const sqlInsertUsuario = 'INSERT INTO Usuarios (Nombre, Apellido, Mail, Username, Password, TipoUsuario) VALUES (?, ?, ?, ?, ?, ?)';
+        const values = [Nombre, Apellido, Mail, Username, Password, TipoUsuario];
         connection.query(sqlInsertUsuario, values, (err, result) => {
             if (err) {
             console.error(err);
@@ -70,10 +111,11 @@ async function updateUsuario(req, res){
     const Mail = req.body.Mail;
     const Username = req.body.Username;
     const Password = req.body.Password;
-    const validacionUsuario = await validarUsuario(ID, Nombre, Apellido, Mail, Username, Password);
+    const TipoUsuario = req.body.TipoUsuario;
+    const validacionUsuario = await validarUsuario(ID, Nombre, Apellido, Mail, Username, Password, TipoUsuario);
     if(validacionUsuario == true){
-        const sql = 'UPDATE Usuarios SET Nombre = ?, Apellido = ?, Mail = ?, Username = ?, Password = ? WHERE ID = ?';
-        const values = [Nombre, Apellido, Mail, Username, Password, ID];
+        const sql = 'UPDATE Usuarios SET Nombre = ?, Apellido = ?, Mail = ?, Username = ?, Password = ?, TipoUsuario = ? WHERE ID = ?';
+        const values = [Nombre, Apellido, Mail, Username, Password, ID, TipoUsuario];
         connection.query(sql, values, (err, result) => {
         if (err) {
         console.error(err);
@@ -204,7 +246,7 @@ function CorreoValido(cadena) {
     return regexCorreo.test(cadena);
 }
 
-async function validarUsuario(ID, Nombre, Apellido, Mail, Username, Password)
+async function validarUsuario(ID, Nombre, Apellido, Mail, Username, Password, TipoUsuario)
 {
     respuesta = true;
     if(Nombre == null || Apellido == null || Mail == null || Username == null || Password == null)
@@ -219,6 +261,11 @@ async function validarUsuario(ID, Nombre, Apellido, Mail, Username, Password)
     if(passwordValida(Password) != true && respuesta){
         respuesta = "Contraseña invalida";
     }
+
+    if((TipoUsuario != "ADMIN" && TipoUsuario != "USER") && respuesta)
+    {
+        respuesta = "Tipo de usuario incorrecto";
+    }
     if(respuesta){
 
         await mailDisponible(Mail, ID).catch(err => {
@@ -232,10 +279,16 @@ async function validarUsuario(ID, Nombre, Apellido, Mail, Username, Password)
     return respuesta;
 }
 
+function generateToken(user) {
+    return jwt.sign(user, process.env.SECRET, { expiresIn: '15m' });
+}
+
+
 module.exports = {
     getUsuario,
     getUsuarios,
     addUsuario,
     updateUsuario,
-    deleteUsuario
+    deleteUsuario,
+    login
 };

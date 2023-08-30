@@ -1,10 +1,12 @@
 const Compras = require('./Compras');
 const Usuarios = require('./Usuarios');
+const Middleware = require('./middleware');
 const express = require('express');
 const app = express();
 const cors = require('cors');
 const connection = require('./connection.js')
 
+app.use(express.urlencoded({extended:false}));
 app.use(express.json());
 app.use(cors());
 
@@ -25,11 +27,19 @@ connection.connect(function(err) {
 
 
 //USUARIO
+app.get('/login', function(req, res){
+    Usuarios.login(req, res);
+});
+
+app.get('/validateToken', function(req, res){
+    Usuarios.validateToken(req, res);
+});
+
 app.get('/usuario/:id', function(req, res) { 
     Usuarios.getUsuario(req, res);
 });
 
-app.get('/usuarios', function(req, res) { 
+app.get('/usuarios', Middleware.validateToken, function(req, res) { 
     Usuarios.getUsuarios(req, res);
 });
 
