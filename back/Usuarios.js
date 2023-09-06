@@ -1,102 +1,45 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const connection = require('./connection.js')
 const jwt = require('jsonwebtoken');
+const UsuarioModels = require('./Models/UsuarioModels');
 require('dotenv').config();
 
-
-async function login(req, res) {
-    const Username = req.body.Username;
-    const Password = req.body.Password;
-
-    const sql = "SELECT * FROM Usuarios WHERE Username = ?";
-    connection.query(sql, [Username], async (err, result) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send('Error interno del servidor');
-            return;
-        }
-        const validacion = (result[0].Password == Password);
-        if (validacion) {
-            const user = {
-                ID: result[0].ID,
-                ESTADO: result[0].ESTADO,
-                Nombre: result[0].Nombre,
-                Apellido: result[0].Apellido,
-                Mail: result[0].Mail,
-                Username: result[0].Username
-            };
-                const token = generateToken(user);
-                const Vuelta = {
-                    mensaje: 'Usuario autenticado',
-                    token: token
-                }
-                res.setHeader('Content-Type', 'application/json');
-                res.setHeader('Access-Control-Allow-Origin', '*');
-                res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-                res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-                res.send(JSON.stringify(Vuelta));
-        } else {
-            res.status(350).send('Usuario o contraseña incorrectos');
-        }
-    });
-}
-
-function getUsuario(req, res){
-    const ID = req.params.id;
-    
-    const sql = `SELECT * FROM Usuarios WHERE ID=?`;
-    connection.query(sql, [ID], (err, result) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send('Error interno del servidor');
-        return;
+async function getOne(req, res){
+    try {
+        const result = await UsuarioModels.getUsuario(req);
+        return res.json(result); // Retorna el resultado
+      } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
       }
-  
-      res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-      res.send(JSON.stringify(result));
-    });
 }
 
-function getUsuarios(req, res){
-    const sql = 'SELECT * FROM Usuarios WHERE ESTADO IS NULL';
-    connection.query(sql, function(err, result) {
-        if (err) {
-            console.error('Error al realizar la consulta: ' + err.stack);
-            return;
-        }
-        res.setHeader('Content-Type', 'application/json');
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-        res.send(JSON.stringify(result));
-    });
+
+async function getAll(req, res){
+    try {
+        const result = await UsuarioModels.getUsuarios();
+        res.json(result); // Retorna el resultado
+      } catch (error) {
+        res.status(500).send(error);
+      }
 }
 
-async function addUsuario(req, res) {
+async function add(req, res) {
     const Nombre = req.body.Nombre;
     const Apellido = req.body.Apellido;
     const Mail = req.body.Mail;
     const Username = req.body.Username;
     const Password = req.body.Password;
     const TipoUsuario = req.body.TipoUsuario;
-    const validacionUsuario = await validarUsuario(0, Nombre, Apellido, Mail, Username, Password, TipoUsuario);
+    const validacionUsuario = await validarUsuario(Nombre, Apellido, Mail, Username, Password, TipoUsuario);
     if(validacionUsuario == true){
-        const sqlInsertUsuario = 'INSERT INTO Usuarios (Nombre, Apellido, Mail, Username, Password, TipoUsuario) VALUES (?, ?, ?, ?, ?, ?)';
-        const values = [Nombre, Apellido, Mail, Username, Password, TipoUsuario];
-        connection.query(sqlInsertUsuario, values, (err, result) => {
-            if (err) {
-            console.error(err);
-            res.status(500).send('Error al insertar el usuario');
-            } else {
-            console.log(`Usuario insertado`);
-            res.status(200).send(`Usuario insertado`);
-            }
-            });
+        try {
+            const result = await UsuarioModels.addUsuario(req);
+            res.send(result); // Retorna el resultado
+          } catch (error) {
+            res.status(500).send(error);
+          }
     }
     else
     {
@@ -104,7 +47,7 @@ async function addUsuario(req, res) {
     }
 }
 
-async function updateUsuario(req, res){
+async function update(req, res){
     const ID = req.body.ID;
     const Nombre = req.body.Nombre;
     const Apellido = req.body.Apellido;
@@ -112,19 +55,18 @@ async function updateUsuario(req, res){
     const Username = req.body.Username;
     const Password = req.body.Password;
     const TipoUsuario = req.body.TipoUsuario;
-    const validacionUsuario = await validarUsuario(ID, Nombre, Apellido, Mail, Username, Password, TipoUsuario);
+    if(!req.body.ID){
+        res.status(400).send("Falta el ID");
+        return;
+    }
+    const validacionUsuario = await validarUsuario(Nombre, Apellido, Mail, Username, Password, TipoUsuario, ID);
     if(validacionUsuario == true){
-        const sql = 'UPDATE Usuarios SET Nombre = ?, Apellido = ?, Mail = ?, Username = ?, Password = ?, TipoUsuario = ? WHERE ID = ?';
-        const values = [Nombre, Apellido, Mail, Username, Password, ID, TipoUsuario];
-        connection.query(sql, values, (err, result) => {
-        if (err) {
-        console.error(err);
-        res.status(500).send('Error al insertar usuario');
-        } else {
-        console.log(`Usuario insertado`);
-        res.status(200).send(`Usuario insertado`);
-        }
-        });
+        try {
+            const result = await UsuarioModels.updateUsuario(req);
+            res.send(result); // Retorna el resultado
+          } catch (error) {
+            res.status(500).send(error);
+          }
     }
     else
     {
@@ -134,87 +76,65 @@ async function updateUsuario(req, res){
 }
 
 
-function deleteUsuario(req, res){
-    const ID = req.params.id;
-    const Fecha = new Date();
-    
-    const sql = `UPDATE Usuarios SET ESTADO = ? WHERE ID=?`;
-  
-    connection.query(sql, [Fecha, ID], (err, result) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send('Error interno del servidor');
-        return;
+async function dlt(req, res){
+    if(!req.body.ID){
+        return res.status(400).send("Ingrese un ID");
+    }
+    try {
+        const result = await UsuarioModels.deleteUsuario(req.body.ID);
+        return res.send(result); // Retorna el resultado
+      } catch (error) {
+        console.log(error);
+        return res.status(500).send(error);
       }
-  
-        res.status(200).send('Usuario eliminado correctamente');
-    });
 }
 
 
 
-function usernameDisponible(username, id) {
-    return new Promise((resolve, reject) => {
-        if(id === 0)
-        {
-            var sql = `SELECT * FROM Usuarios WHERE Username=?`;
-            var values = [username];
-        }
-        else
-        {
-            var sql = `SELECT * FROM Usuarios WHERE Username=? AND ID <> ?`;
-            var values = [username, id];
-        }
-        
-        connection.query(sql, values, (err, result) => {
-            if (err) {
-                console.error(err);
-                reject(err);
-                return;
+async function usernameDisponible(username, id) {
+    const json = {
+        body : {
+                Username : username,
+                ID : id
             }
-            
-            if (result.length === 0) {
-                console.log(result);
-                console.log("username disponible");
-                resolve("Username disponible");
-            } else {
-                console.log("username en uso");
-                reject("Username en uso");
-            }
-        });
-    });
+    }
+
+    try {
+        const result = await UsuarioModels.getUsuario(json);
+        console.log(result);
+        if(result){
+            return false;
+        }
+        else{
+            return true;
+        }
+      } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+      }
 }
 
 
-function mailDisponible(mail, id) {
-    return new Promise((resolve, reject) => {
-        if(id === 0)
-        {
-            var sql = `SELECT * FROM Usuarios WHERE Mail=?`;
-            var values = [mail];
+async function mailDisponible(mail, id) {
+    const json = {
+        body : {
+            Mail : mail,
+            ID : id
         }
-        else
-        {
-            var sql = `SELECT * FROM Usuarios WHERE Mail=? AND ID <> ?`;
-            var values = [mail, id];
+    }
+    try {
+        const result = await UsuarioModels.getUsuario(json);
+        console.log(result);
+        if(result){
+            return false;
         }
-        
-        connection.query(sql, values, (err, result) => {
-            if (err) {
-                reject(err);
-                console.log("ESTOY ERRANDO");
-                return;
-            }
-            
-            if (result.length === 0) {
-                console.log("Mail disponible");
-                resolve("Mail disponible");
-            } else {
-                console.log("Mail en uso");
-                reject("Mail en uso");
-            }
-        });
-    });
+        else{
+            return true;
+        }
+      } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+      }
 }
 
 function passwordValida(password) {
@@ -246,49 +166,45 @@ function CorreoValido(cadena) {
     return regexCorreo.test(cadena);
 }
 
-async function validarUsuario(ID, Nombre, Apellido, Mail, Username, Password, TipoUsuario)
+async function validarUsuario(Nombre, Apellido, Mail, Username, Password, TipoUsuario, ID)
 {
-    respuesta = true;
-    if(Nombre == null || Apellido == null || Mail == null || Username == null || Password == null)
+    if(!Nombre || !Apellido || !Mail || !Username || !Password)
     {
-        respuesta = "Campos incompletos";
+        return "Campos incompletos";
     }
 
-    if(CorreoValido(Mail) != true && respuesta){
-        respuesta = "Formato correo incorrecto";
+    if(CorreoValido(Mail) != true){
+        return "Formato correo incorrecto";
     }
 
-    if(passwordValida(Password) != true && respuesta){
-        respuesta = "Contraseña invalida";
+    if(passwordValida(Password) != true){
+        return "Contraseña invalida";
     }
 
-    if((TipoUsuario != "ADMIN" && TipoUsuario != "USER") && respuesta)
+    if((TipoUsuario != "ADMIN" && TipoUsuario != "USER"))
     {
-        respuesta = "Tipo de usuario incorrecto";
+        return "Tipo de usuario incorrecto";
     }
-    if(respuesta){
-
-        await mailDisponible(Mail, ID).catch(err => {
-            respuesta =  err;
-        });
-
-        await usernameDisponible(Username, ID).catch(err => {
-            respuesta =  err;
-        });
+    
+    if(await usernameDisponible(Username, ID) == false)
+    {
+        return "Username en uso"
     }
-    return respuesta;
+
+    if(await mailDisponible(Mail, ID) == false)
+    {
+        return "Mail en uso"
+    }
+    return true;
 }
 
-function generateToken(user) {
-    return jwt.sign(user, process.env.SECRET, { expiresIn: '15m' });
-}
+
 
 
 module.exports = {
-    getUsuario,
-    getUsuarios,
-    addUsuario,
-    updateUsuario,
-    deleteUsuario,
-    login
+    getAll,
+    getOne,
+    add,
+    update,
+    dlt
 };

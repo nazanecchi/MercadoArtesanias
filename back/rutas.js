@@ -1,10 +1,11 @@
 const Compras = require('./Compras');
 const Usuarios = require('./Usuarios');
+const Articulos = require('./Articulos');
 const Middleware = require('./middleware');
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const connection = require('./connection.js')
+const connection = require('./Models/connection.js')
 
 app.use(express.urlencoded({extended:false}));
 app.use(express.json());
@@ -19,41 +20,59 @@ connection.connect(function(err) {
     console.log('Conexión a la base de datos exitosa.');
 });
 
-//  get nombre/:id  get element
+//  get nombre  get element
 //  get nombres     get
 //  post nombre     add
 //  put nombre      update
-//  put nombre/:id  delete
+//  delete nombre  delete
 
 
 //USUARIO
 app.get('/login', function(req, res){
-    Usuarios.login(req, res);
+    Middleware.login(req, res);
 });
 
-app.get('/validateToken', function(req, res){
-    Usuarios.validateToken(req, res);
+app.get('/usuario', function(req, res) { 
+    Usuarios.getOne(req, res);
 });
 
-app.get('/usuario/:id', function(req, res) { 
-    Usuarios.getUsuario(req, res);
-});
-
-app.get('/usuarios', Middleware.validateToken, function(req, res) { 
-    Usuarios.getUsuarios(req, res);
+app.get('/usuarios', function(req, res) { 
+    Usuarios.getAll(req, res);
 });
 
 app.post('/usuario', function(req, res) {
-    Usuarios.addUsuario(req, res);
+    Usuarios.add(req, res);
 });
 
 app.put('/usuario', function(req, res) {
-    Usuarios.updateUsuario(req, res);
+    Usuarios.update(req, res);
 });
 
-app.put('/usuario/:id', function(req, res) {
-    Usuarios.deleteUsuario(req, res);
+app.delete('/usuario', function(req, res) {
+    Usuarios.dlt(req, res);
 });
+
+//ARTICULOS
+app.get('/articulo', function(req, res) { 
+    Articulos.getOne(req, res);
+});
+
+app.get('/articulos', function(req, res) { 
+    Articulos.getAll(req, res);
+});
+app.post('/articulo', function(req, res) { 
+    Articulos.add(req, res);
+});
+
+app.put('/articulo', function(req, res) { 
+    Articulos.update(req, res);
+});
+
+app.delete('/articulo', function(req, res) { 
+    Articulos.dlt(req, res);
+});
+
+
 //COMPRAS
 app.get('/compra/:id', function(req, res) { 
     Compras.getCompra(req, res);
@@ -71,7 +90,7 @@ app.put('/compra', function(req, res) {
     Compras.updateCompra(req, res); //no se le pasa la fecha y hora ya que no se puede modificar
 });
 
-app.put('/compra/:id', function(req, res) {
+app.delete('/compra/:id', function(req, res) {
     Compras.deleteCompra(req, res);
 });
 

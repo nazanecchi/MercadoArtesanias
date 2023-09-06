@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const connection = require('./connection.js')
+const connection = require('./Models/connection.js')
 
 function getCompra(req, res){
     const ID = req.params.id;
