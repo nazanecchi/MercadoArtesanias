@@ -1,6 +1,7 @@
 const connection = require('./Models/connection.js');
 const ArticuloModels = require('./Models/ArticuloModels');
 const UsuarioModels = require('./Models/UsuarioModels');
+const CategoriaModels = require('./Models/CategoriaModels.js');
 
 async function getOne(req, res){
     if(!req.body.ID){
@@ -74,44 +75,79 @@ async function update(req, res){
         }
     }
 
-    async function validarArticulo(req){
-        if(!req.body.Nombre || !req.body.PrecioActual || !req.body.Cantidad || !req.body.IDUsuario){
-            return "Faltan campos obligatorios";
-        }
-        else
-        {
-            if(req.body.Nombre.length < 8){
-                return "El nombre tiene menos de 8 letras";
-            }
 
-            if(req.body.PrecioActual == 0){
-                return "El precio no puede ser 0";
-            }
-
-            if(req.body.Cantidad == 0){
-                return "La cantidad no puede ser 0";
-            }
-            
-            const id = {
-                body : {
-                    ID : req.body.IDUsuario
-                } 
-            }
-        try{
-            const result = await UsuarioModels.getUsuario(id)
-            console.log(result + "H")
-            if(!result){
-                console.log("No existe el usuario");
-            return "No existe el usuario";
-            }
-        } catch(err){
-            res.send(err)
-        }
-            
-        }
-
-        return true;
+async function validarCategoria(req){
+    const id = {
+        body : {
+            ID : req.body.IDCategoria
+        } 
     }
+    try{
+        const result = await CategoriaModels.getCategoria(id)
+        console.log(result + "H")
+        if(!result){
+        console.log("No existe el usuario");
+        return false;
+        }else{
+        return true;
+        }
+    } catch(err){
+        res.send(err)
+    }
+}
+
+async function validarUsuario(req){
+    const id = {
+        body : {
+            ID : req.body.IDUsuario
+        } 
+    }
+    try{
+        const result = await UsuarioModels.getUsuario(id)
+        console.log(result + "H")
+        if(!result){
+        console.log("No existe el usuario");
+        return false;
+        }else{
+        return true;
+        }
+    } catch(err){
+        res.send(err)
+    }
+}
+
+
+async function validarArticulo(req){
+    if(!req.body.Nombre || !req.body.PrecioActual || !req.body.Cantidad || !req.body.IDUsuario || !req.body.IDCategoria){
+        return "Faltan campos obligatorios";
+    }
+    else
+    {
+        if(req.body.Nombre.length < 8){
+            return "El nombre tiene menos de 8 letras";
+        }
+
+        if(req.body.PrecioActual == 0){
+            return "El precio no puede ser 0";
+        }
+
+        if(req.body.Cantidad == 0){
+            return "La cantidad no puede ser 0";
+        }
+        if(await validarUsuario(req) != true){
+            return "No existe el usuario"
+        }
+
+        if(await validarCategoria(req) != true){
+            return "No existe la categoria"
+        }
+        
+        
+        
+    }
+
+    return true;
+}
 
 
 module.exports = {
