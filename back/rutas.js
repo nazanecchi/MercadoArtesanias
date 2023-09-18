@@ -1,6 +1,8 @@
 const Compras = require('./Compras');
 const Usuarios = require('./Usuarios');
 const Articulos = require('./Articulos');
+const Direcciones = require('./Direcciones');
+const Categorias = require('./Categorias');
 const Middleware = require('./middleware');
 const express = require('express');
 const app = express();
@@ -72,6 +74,37 @@ app.delete('/articulo', function(req, res) {
     Articulos.dlt(req, res);
 });
 
+//DIRECCIONES
+
+app.get('/direccion', function(req, res) { 
+    Direcciones.getOne(req, res);
+});
+
+app.get('/direcciones', function(req, res) { 
+    Direcciones.getAll(req, res);
+});
+
+app.post('/direccion', function(req, res) { 
+    Direcciones.add(req, res);
+});
+
+app.put('/direccion', function(req, res) { 
+    Direcciones.update(req, res);
+});
+
+app.delete('/direccion', function(req, res) { 
+    Direcciones.dlt(req, res);
+});
+
+//CATEGORIAS
+
+app.get('/categoria', function(req, res) { 
+    Categorias.getOne(req, res);
+});
+
+app.get('/categorias', function(req, res) { 
+    Categorias.getAll(req, res);
+});
 
 //COMPRAS
 app.get('/compra/:id', function(req, res) { 

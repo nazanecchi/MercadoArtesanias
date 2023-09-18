@@ -1,25 +1,18 @@
 const express = require('express');
 const app = express();
-const cors = require('cors');
 const connection = require('./Models/connection.js')
 
-function getCompra(req, res){
-    const ID = req.params.id;
-    
-    const sql = `SELECT * FROM Compras WHERE ID=?`;
-    connection.query(sql, [ID], (err, result) => {
-      if (err) {
-        console.error(err);
-        res.status(500).send('Error interno del servidor');
-        return;
+async function getCompra(req, res){
+  if(!req.body.ID){
+        return res.status(400).send("Ingrese un ID");
+    }
+    try {
+        const result = await CompraModels.getCompra(req);
+        res.json(result); // Retorna el resultado
+      } catch (error) {
+        console.log("error direcciones")
+        res.status(500).send(error);
       }
-  
-      res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-      res.send(JSON.stringify(result));
-    });
 }
 
 function getCompras(req, res){

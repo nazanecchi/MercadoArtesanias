@@ -1,10 +1,9 @@
-const connection = require('./Models/connection.js');
 const ArticuloModels = require('./Models/ArticuloModels');
 const UsuarioModels = require('./Models/UsuarioModels');
 const CategoriaModels = require('./Models/CategoriaModels.js');
 
 async function getOne(req, res){
-    if(!req.body.ID){
+    if(!req.body.ID && !req.body.Username && !req.body.Mail){
         return res.status(400).send("Ingrese un ID");
     }
     try {
@@ -29,6 +28,9 @@ async function getAll(req, res){
 
 async function add(req, res){
         const validacion = await validarArticulo(req);
+        if(req.body.ID){
+            res.status(200).send("No mandes ID para agregar un articulo");
+        }
         if(validacion == true){
             try{
                 const result = await ArticuloModels.addArticulo(req);
@@ -44,31 +46,41 @@ async function add(req, res){
     }
 
 async function update(req, res){
-        if(!req.body.ID){
-            res.status(200).send("Falta el ID");
-            return;
+    if(!req.body.ID){
+        res.send("Ingrese un ID");
+        return;
+      }else{
+        if(await ArticuloModels.validarArticulo(req.body.ID)!=true){
+          res.send("ID invalido");
+          return;
         }
-        const validacion = await validarArticulo(req);
-        if(validacion == true){
-            try{
-                const result = await ArticuloModels.updateArticulo(req);
-                res.send(result);
-            } catch(err){
-                res.status(500).send(err);
-            }
+      }
+    const validacion = await validarArticulo(req);
+    if(validacion == true){
+        try{
+            const result = await ArticuloModels.updateArticulo(req);
+            res.send(result);
+        } catch(err){
+            res.status(500).send(err);
         }
-        else{
-            res.status(200).send(validacion);
-        }
+    }
+    else{
+        res.status(200).send(validacion);
+    }
 }
 
  async function dlt(req, res){
-        const ID = req.body.ID;
-        if(!req.body.ID){
-            return res.status(400).send("Ingrese un ID");
+    if(!req.body.ID){
+        res.send("Ingrese un ID");
+        return;
+        }else{
+        if(await ArticuloModels.validarArticulo(req.body.ID)!=true){
+            res.send("ID invalido");
+            return;
         }
+      }
         try{
-            const result = await ArticuloModels.deleteArticulo(ID);
+            const result = await ArticuloModels.deleteArticulo(req.body.ID);
             res.send(result);
         } catch(err){
             res.status(500).send(err);
@@ -76,45 +88,7 @@ async function update(req, res){
     }
 
 
-async function validarCategoria(req){
-    const id = {
-        body : {
-            ID : req.body.IDCategoria
-        } 
-    }
-    try{
-        const result = await CategoriaModels.getCategoria(id)
-        console.log(result + "H")
-        if(!result){
-        console.log("No existe el usuario");
-        return false;
-        }else{
-        return true;
-        }
-    } catch(err){
-        res.send(err)
-    }
-}
 
-async function validarUsuario(req){
-    const id = {
-        body : {
-            ID : req.body.IDUsuario
-        } 
-    }
-    try{
-        const result = await UsuarioModels.getUsuario(id)
-        console.log(result + "H")
-        if(!result){
-        console.log("No existe el usuario");
-        return false;
-        }else{
-        return true;
-        }
-    } catch(err){
-        res.send(err)
-    }
-}
 
 
 async function validarArticulo(req){
@@ -123,8 +97,8 @@ async function validarArticulo(req){
     }
     else
     {
-        if(req.body.Nombre.length < 8){
-            return "El nombre tiene menos de 8 letras";
+        if(req.body.Nombre.length < 4){
+            return "El nombre tiene menos de 4 letras";
         }
 
         if(req.body.PrecioActual == 0){
@@ -134,11 +108,11 @@ async function validarArticulo(req){
         if(req.body.Cantidad == 0){
             return "La cantidad no puede ser 0";
         }
-        if(await validarUsuario(req) != true){
+        if(await UsuarioModels.validarUsuario(req.body.IDUsuario) != true){
             return "No existe el usuario"
         }
 
-        if(await validarCategoria(req) != true){
+        if(await CategoriaModels.validarCategoria(req.body.IDCategoria) != true){
             return "No existe la categoria"
         }
         

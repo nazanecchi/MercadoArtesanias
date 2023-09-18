@@ -120,10 +120,31 @@ function deleteUsuario(ID){
     });
 }
 
+async function validarUsuario(IDUsuario){
+    const id = {
+        body : {
+            ID : IDUsuario
+        } 
+    }
+    try{
+        const result = await getUsuario(id)
+        console.log(result + "H")
+        if(!result){
+        console.log("No existe el usuario");
+        return false;
+        }else{
+        return true;
+        }
+    } catch(err){
+        res.send(err)
+    }
+}
+
 module.exports = {
     getUsuario,
     getUsuarios,
     addUsuario,
     updateUsuario,
-    deleteUsuario
+    deleteUsuario,
+    validarUsuario
 }

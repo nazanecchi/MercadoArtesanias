@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const UsuarioModels = require('./Models/UsuarioModels');
 require('dotenv').config();
@@ -56,9 +55,14 @@ async function update(req, res){
     const Password = req.body.Password;
     const TipoUsuario = req.body.TipoUsuario;
     if(!req.body.ID){
-        res.status(400).send("Falta el ID");
+        res.send("Ingrese un ID");
         return;
-    }
+      }else{
+        if(await UsuarioModels.validarUsuario(req.body.ID)!=true){
+          res.send("ID invalido");
+          return;
+        }
+      }
     const validacionUsuario = await validarUsuario(Nombre, Apellido, Mail, Username, Password, TipoUsuario, ID);
     if(validacionUsuario == true){
         try {

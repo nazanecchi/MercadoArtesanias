@@ -102,10 +102,30 @@ function deleteArticulo(id){
 
 }
 
+async function validarArticulo(IDArticulo){
+    const id = {
+        body : {
+            ID : IDArticulo
+        } 
+    }
+    try{
+        const result = await getArticulo(id)
+        if(!result){
+        console.log("No existe el usuario");
+        return false;
+        }else{
+        return true;
+        }
+    } catch(err){
+        res.send(err)
+    }
+  }
+
 module.exports = {
     getArticulo,
     getArticulos,
     addArticulo,
     updateArticulo,
-    deleteArticulo
+    deleteArticulo,
+    validarArticulo
 };
