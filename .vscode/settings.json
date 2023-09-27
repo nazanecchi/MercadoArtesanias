@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 {
     "files.associations": {
         "barrier": "cpp",
@@ -92,4 +93,10 @@
         "typeinfo": "cpp",
         "variant": "cpp"
     }
+=======
+{
+    "files.associations": {
+        "iostream": "cpp"
+    }
+>>>>>>> Stashed changes
 }
