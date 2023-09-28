@@ -3,7 +3,7 @@ const UsuarioModels = require('./Models/UsuarioModels');
 const CategoriaModels = require('./Models/CategoriaModels.js');
 
 async function getOne(req, res){
-    if(!req.body.ID && !req.body.Username && !req.body.Mail){
+    if(!req.body.ID){
         return res.status(400).send("Ingrese un ID");
     }
     try {
@@ -29,29 +29,33 @@ async function getAll(req, res){
 async function add(req, res){
         const validacion = await validarArticulo(req);
         if(req.body.ID){
-            res.status(200).send("No mandes ID para agregar un articulo");
+            res.status(400).send("No mandes ID para agregar un articulo");
+            return;
         }
         if(validacion == true){
             try{
                 const result = await ArticuloModels.addArticulo(req);
                 console.log("Entro aca");
                 res.send(result);
+                return;
             } catch(err){
                 res.status(500).send(err);
+                return;
             }
         }
         else{
-            res.status(200).send(validacion);
+            res.status(400).send(validacion);
+            return;
         }
     }
 
 async function update(req, res){
     if(!req.body.ID){
-        res.send("Ingrese un ID");
+        res.status(400).send("Ingrese un ID");
         return;
       }else{
         if(await ArticuloModels.validarArticulo(req.body.ID)!=true){
-          res.send("ID invalido");
+          res.status(400).send("ID invalido");
           return;
         }
       }
@@ -60,12 +64,15 @@ async function update(req, res){
         try{
             const result = await ArticuloModels.updateArticulo(req);
             res.send(result);
+            return;
         } catch(err){
             res.status(500).send(err);
+            return;
         }
     }
     else{
-        res.status(200).send(validacion);
+        res.status(400).send(validacion);
+        return;
     }
 }
 
@@ -82,8 +89,10 @@ async function update(req, res){
         try{
             const result = await ArticuloModels.deleteArticulo(req.body.ID);
             res.send(result);
+            return;
         } catch(err){
             res.status(500).send(err);
+            return;
         }
     }
 

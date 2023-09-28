@@ -1,7 +1,7 @@
 const connection = require('./connection.js')
 
 function getCategoria(req){
-    const sql = "SELECT * FROM Categorias WHERE ID = ? AND ESTADO IS NULL?"
+    const sql = "SELECT * FROM Categorias WHERE ID = ? AND ESTADO IS NULL"
     const values = req.body.ID
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {

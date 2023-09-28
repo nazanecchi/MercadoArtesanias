@@ -7,7 +7,7 @@ require('dotenv').config();
 async function getOne(req, res){
     try {
         const result = await UsuarioModels.getUsuario(req);
-        return res.json(result); // Retorna el resultado
+        return res.status(200).json(result); // Retorna el resultado
       } catch (error) {
         console.log(error);
         res.status(500).send(error);
@@ -55,11 +55,11 @@ async function update(req, res){
     const Password = req.body.Password;
     const TipoUsuario = req.body.TipoUsuario;
     if(!req.body.ID){
-        res.send("Ingrese un ID");
+        res.status(400).send("Falta el ID");
         return;
       }else{
         if(await UsuarioModels.validarUsuario(req.body.ID)!=true){
-          res.send("ID invalido");
+          res.status(400).send("ID inexistente");
           return;
         }
       }
@@ -67,7 +67,7 @@ async function update(req, res){
     if(validacionUsuario == true){
         try {
             const result = await UsuarioModels.updateUsuario(req);
-            res.send(result); // Retorna el resultado
+            res.status(200).send(result); // Retorna el resultado
           } catch (error) {
             res.status(500).send(error);
           }
@@ -82,11 +82,11 @@ async function update(req, res){
 
 async function dlt(req, res){
     if(!req.body.ID){
-        return res.status(400).send("Ingrese un ID");
+        return res.status(400).send("Falta el ID");
     }
     try {
         const result = await UsuarioModels.deleteUsuario(req.body.ID);
-        return res.send(result); // Retorna el resultado
+        return res.status(200).send(result); // Retorna el resultado
       } catch (error) {
         console.log(error);
         return res.status(500).send(error);
