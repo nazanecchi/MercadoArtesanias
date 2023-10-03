@@ -128,7 +128,6 @@ async function validarUsuario(IDUsuario){
     }
     try{
         const result = await getUsuario(id)
-        console.log(result + "H")
         if(!result){
         console.log("No existe el usuario");
         return false;

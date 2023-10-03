@@ -16,8 +16,8 @@ function getCompra(req){
 }
 
 function getCompras(req){
-    const sql = "SELECT * FROM Compras WHERE ID = ? AND ESTADO IS NULL"
-    const values = req.body.ID
+    const sql = "SELECT * FROM Compras WHERE ESTADO IS NULL";
+    const values = [];
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
@@ -30,23 +30,14 @@ function getCompras(req){
     })
 }
 
-function addArticulo(req){
-    var sql = "INSERT INTO Articulos(Nombre, PrecioActual, Cantidad, Stock, Descripcion, PrecioEnvio, IDCategoria, IDUsuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    var values = [req.body.Nombre, req.body.PrecioActual, req.body.Cantidad, 0, req.body.Descripcion, req.body.PrecioEnvio, req.body.IDCategoria, req.body.IDUsuario];
-    return new Promise((resolve, reject) => {
-        connection.query(sql, values, (err, result) => {
-            if (err) {
-                reject(err);
-            } else {
-                console.log(`Articulo insertado`);
-                resolve("Articulo añadido")
-            }
-            });
-    })
-
+function addCompra(req){
+    var sql = "INSERT INTO Compras(Monto, FechaYHora, MetodoPago, IDArticulo, Cantidad, IDUsuario, IDDireccion) VALUES (?, NOW(), ?, ?, ?, ?, ?); ";
+    var values = [req.body.Monto, req.body.MetodoPago, req.body.IDArticulo, req.body.Cantidad, req.body.IDUsuario, req.body.IDDireccion];
+    connection.query(sql, values);
 } 
 
 module.exports = {
     getCompra,
-    getCompras
+    getCompras,
+    addCompra
 };

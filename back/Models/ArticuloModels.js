@@ -2,7 +2,7 @@ const connection = require('./connection.js')
 
 function getArticulo(req){
     const sql = "SELECT * FROM Articulos WHERE ID = ? AND ESTADO IS NULL"
-    const values = req.body.ID
+    const values = req.body.ID;
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
@@ -102,6 +102,21 @@ function deleteArticulo(id){
 
 }
 
+async function updateVendidos(ID, Cantidad){
+    const sql = "UPDATE Articulos SET Vendidos = Vendidos + ? WHERE ID = ?";
+    const values = [Cantidad, ID];
+    return new Promise((resolve, reject) => {
+        connection.query(sql, values, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                console.log(`Articulo actualizado`);
+                resolve("Articulo actualizado")
+            }
+            });
+    })
+}
+
 async function validarArticulo(IDArticulo){
     const id = {
         body : {
@@ -110,6 +125,7 @@ async function validarArticulo(IDArticulo){
     }
     try{
         const result = await getArticulo(id)
+        console.log(result.Descripcion);
         if(!result){
         console.log("No existe el usuario");
         return false;
@@ -127,5 +143,6 @@ module.exports = {
     addArticulo,
     updateArticulo,
     deleteArticulo,
+    updateVendidos,
     validarArticulo
 };

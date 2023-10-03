@@ -15,9 +15,6 @@ async function getOne(req, res){
 }
 
 async function getAll(req, res){
-    if(!req.body.ID){
-        return res.status(400).send("Ingrese un ID");
-    }
         try {
             const result = await ArticuloModels.getArticulos(req);
             res.json(result); // Retorna el resultado

@@ -107,29 +107,17 @@ app.get('/categorias', function(req, res) {
 });
 
 //COMPRAS
-app.get('/compra/:id', function(req, res) { 
-    Compras.getCompra(req, res);
+app.get('/compra', function(req, res) { 
+    Compras.getOne(req, res);
 });
 
 app.get('/compras', function(req, res) {
-    Compras.getCompras(req, res);
+    Compras.getAll(req, res);
 });
 
 app.post('/compra', function(req, res) {
-    Compras.addCompra(req, res);
+    Compras.add(req, res);
 });
-
-app.put('/compra', function(req, res) {
-    Compras.updateCompra(req, res); //no se le pasa la fecha y hora ya que no se puede modificar
-});
-
-app.delete('/compra/:id', function(req, res) {
-    Compras.deleteCompra(req, res);
-});
-
-
-
-
 
 
 app.listen(3005, () => {
