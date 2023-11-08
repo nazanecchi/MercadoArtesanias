@@ -38,7 +38,7 @@ async function validarCategoria(IDCategoria){
   try{
       const result = await getCategoria(id)
       if(!result){
-      console.log("No existe el usuario");
+      console.log("No existe la categoria");
       return false;
       }else{
       return true;

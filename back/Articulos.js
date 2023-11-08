@@ -1,6 +1,7 @@
 const ArticuloModels = require('./Models/ArticuloModels');
 const UsuarioModels = require('./Models/UsuarioModels');
 const CategoriaModels = require('./Models/CategoriaModels.js');
+const ContenidoModels = require('./Models/ContenidoModels');
 
 async function getOne(req, res){
     if(!req.body.ID){
@@ -30,9 +31,22 @@ async function add(req, res){
             return;
         }
         if(validacion == true){
+            var result;
             try{
-                const result = await ArticuloModels.addArticulo(req);
-                console.log("Entro aca");
+                result = await ArticuloModels.addArticulo(req);
+            } catch(err){
+                res.status(500).send(err);
+                return;
+            }
+            try{
+                console.log(result);
+                const cont = {
+                    body:{
+                        IDArticulo: result,
+                        IDCategoria: req.body.IDCategoria 
+                    }
+                }
+                result = await ContenidoModels.addContenido(cont);
                 res.send(result);
                 return;
             } catch(err){

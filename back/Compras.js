@@ -53,7 +53,7 @@ async function getAll(req, res){
     {
       return "Faltan campos obligatorios";
     }
-    if(await ArticuloModels.validarArticulo(req.body.IDArticulo) == false){
+    if((await ArticuloModels.validarArticulo(req.body.IDArticulo)) == false){
       return "Articulo invalido";
     }
     if(await UsuarioModels.validarUsuario(req.body.IDUsuario) == false){

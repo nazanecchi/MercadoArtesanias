@@ -43,6 +43,7 @@ async function login(req, res) {
                 const token = generateToken(user);
                 const Vuelta = {
                     mensaje: 'Usuario autenticado',
+                    TipoUsuario: user.TipoUsuario,
                     token: token
                 }
                 res.json(Vuelta);

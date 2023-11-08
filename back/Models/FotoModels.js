@@ -1,0 +1,38 @@
+const connection = require('./connection.js')
+
+function addFoto(data, req, nombre){
+    console.log(nombre);
+    var values = [data.esPrincipal, req.body.IDArticulo, nombre];
+    var sql = "INSERT INTO Fotos (esPrincipal, IDArticulo, RutaFoto) VALUES (?, ?, ?)";
+    return new Promise((resolve, reject) => {
+        connection.query(sql, values, (err, result) => {
+            if (err) {
+            console.log(err);
+            reject(err);
+            return;
+            }
+            resolve("Agrega foto " + req.files[i].path);
+        });
+        })
+}
+
+function getFotos(req){
+    var sql = "SELECT RutaFoto FROM Fotos WHERE IDArticulo = ? ORDER BY esPrincipal";
+    var values = [req.body.IDArticulo];
+
+    return new Promise((resolve, reject) => {
+        connection.query(sql, values, (err, result) => {
+            if (err) {
+              console.log(err);
+              reject(err);
+              return;
+            }
+            resolve(result)
+          });
+    })
+}
+
+module.exports = {
+    addFoto,
+    getFotos
+}

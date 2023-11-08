@@ -49,7 +49,7 @@ function getArticulos(req){
 }
 
 function addArticulo(req){
-    var sql = "INSERT INTO Articulos(Nombre, PrecioActual, Cantidad, Stock, Descripcion, PrecioEnvio, IDCategoria, IDUsuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    var sql = "INSERT INTO Articulos(Nombre, PrecioActual, Cantidad, Vendidos, Descripcion, PrecioEnvio, IDCategoria, IDUsuario) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     var values = [req.body.Nombre, req.body.PrecioActual, req.body.Cantidad, 0, req.body.Descripcion, req.body.PrecioEnvio, req.body.IDCategoria, req.body.IDUsuario];
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
@@ -57,7 +57,7 @@ function addArticulo(req){
                 reject(err);
             } else {
                 console.log(`Articulo insertado`);
-                resolve("Articulo añadido")
+                resolve(result.insertId);
             }
             });
     })
@@ -125,7 +125,6 @@ async function validarArticulo(IDArticulo){
     }
     try{
         const result = await getArticulo(id)
-        console.log(result.Descripcion);
         if(!result){
         console.log("No existe el usuario");
         return false;
@@ -133,7 +132,7 @@ async function validarArticulo(IDArticulo){
         return true;
         }
     } catch(err){
-        res.send(err)
+        return(err)
     }
   }
 
