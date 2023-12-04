@@ -48,11 +48,11 @@ async function login(req, res) {
                 }
                 res.json(Vuelta);
         } else {
-            res.status(350).send('Usuario o contraseña incorrectos');
+            res.status(400).send({error:'Usuario o contraseña incorrectos'});
         }
     });}
     else{
-        res.send("Faltan datos");
+        res.status(400).send({error:'faltan datos'});
     }
 }
 

@@ -46,8 +46,16 @@ async function add(req, res){
                         IDCategoria: req.body.IDCategoria 
                     }
                 }
-                result = await ContenidoModels.addContenido(cont);
-                res.send(result);
+                var resultado = await ContenidoModels.addContenido(cont);
+                console.log("HAsta aca ok 1");
+                resultado = await ContenidoModels.getLastId(cont.body.IDArticulo);
+                console.log("HAsta aca ok 2");
+                const dev = {
+                    IDArticulo : result,
+                    IDContenidos : resultado
+                }
+                res.send(dev);
+                console.log("HAsta aca ok 3")
                 return;
             } catch(err){
                 res.status(500).send(err);

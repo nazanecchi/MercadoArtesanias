@@ -37,15 +37,15 @@ connection.connect(function(err) {
 
 
 //USUARIO
-app.get('/login', function(req, res){
+app.post('/login', function(req, res){
     Middleware.login(req, res);
 });
 
-app.get('/usuario', function(req, res) { 
+app.post('/oneusuario', function(req, res) { 
     Usuarios.getOne(req, res);
 });
 
-app.get('/usuarios', function(req, res) { 
+app.post('/allusuarios', function(req, res) { 
     Usuarios.getAll(req, res);
 });
 
@@ -62,11 +62,11 @@ app.delete('/usuario', function(req, res) {
 });
 
 //ARTICULOS
-app.get('/articulo', function(req, res) { 
+app.post('/onearticulo', function(req, res) { 
     Articulos.getOne(req, res);
 });
 
-app.get('/articulos', function(req, res) { 
+app.post('/allarticulos', function(req, res) { 
     Articulos.getAll(req, res);
 });
 app.post('/articulo', Articulos.add);
@@ -81,11 +81,11 @@ app.delete('/articulo', function(req, res) {
 
 //DIRECCIONES
 
-app.get('/direccion', function(req, res) { 
+app.post('/onedireccion', function(req, res) { 
     Direcciones.getOne(req, res);
 });
 
-app.get('/direcciones', function(req, res) { 
+app.post('/alldirecciones', function(req, res) { 
     Direcciones.getAll(req, res);
 });
 
@@ -103,27 +103,27 @@ app.delete('/direccion', function(req, res) {
 
 //CATEGORIAS
 
-app.get('/categoria', function(req, res) { 
+app.post('/onecategoria', function(req, res) { 
     Categorias.getOne(req, res);
 });
 
-app.get('/categorias', function(req, res) { 
+app.post('/allcategorias', function(req, res) { 
     Categorias.getAll(req, res);
 });
 
 //CARACTERISTICAS
 
-app.get('/caracteristica', function(req, res) {
+app.post('/onecaracteristica', function(req, res) {
     Caracteristicas.getOne(req, res);
 });
 
-app.get('/caracteristicas', function(req, res) {
+app.post('/allcaracteristicas', function(req, res) {
     Caracteristicas.getAll(req, res);
 });
 
 //CONTENIDOS
 
-app.get('/contenido', function(req, res) {
+app.post('/onecontenido', function(req, res) {
     Contenido.getOne(req, res);
 });
 
@@ -135,11 +135,11 @@ app.put('/contenido', function(req, res) {
 
 
 //COMPRAS
-app.get('/compra', function(req, res) { 
+app.post('/onecompra', function(req, res) { 
     Compras.getOne(req, res);
 });
 
-app.get('/compras', function(req, res) {
+app.post('/allcompras', function(req, res) {
     Compras.getAll(req, res);
 });
 
@@ -165,12 +165,13 @@ const storage = multer.diskStorage({
 
   const upload = multer({ storage: storage });
   
-  app.post('/fotos', upload.array('archivo', 10), (req, res) => {
+  app.post('/fotos/:id', upload.array('archivos', 10), (req, res) => {
     // El archivo se ha cargado con éxito, aquí puedes realizar otras acciones, como guardar información en la base de datos
         Fotos.add(req, res, nombres);
+        nombres = [];
   });
 
-  app.get('/fotos', (req, res) => {
+  app.post('/allfotos', (req, res) => {
        Fotos.getAll(req, res);
        nombres = [];
   });

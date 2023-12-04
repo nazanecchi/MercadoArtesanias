@@ -23,6 +23,7 @@ async function update(req, res){
             res.send(result);
             return;
         } catch(err){
+            console.log(err);
             res.status(500).send(err);
             return;
         }

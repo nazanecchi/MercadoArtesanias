@@ -8,7 +8,7 @@ async function add(req, res, nombres){
     const val = await validar(req);
     console.log(val);
     if(val != true){
-        res.send(val);
+        res.status(400).send({error:val});
         return val;
     }
     var data = {};
@@ -22,11 +22,11 @@ async function add(req, res, nombres){
         try{
             result = await FotoModels.addFoto(data, req, nombres[i]);
         } catch(err){
-            res.status(500).send(err);
+            res.status(500).send({error:err});
             return;
         }
     }
-    return res.send('Archivo cargado con éxito');
+    return res.status(200).send({mensaje:'Archivo cargado con éxito'});
 }
 
 async function getAll(req, res){
@@ -44,12 +44,12 @@ async function getAll(req, res){
 }
 
 async function validar(req){
-    console.log(req.body.IDArticulo);
-    console.log(!req.files);
-    if(!req.body.IDArticulo || !req.files){
+    console.log(req.params.id);
+    console.log(req.files);
+    if(!req.params.id || !req.files){
         return "Faltan campos obligatorios";
     }
-    if((await ArticuloModels.validarArticulo(req.body.IDArticulo)) == false){
+    if((await ArticuloModels.validarArticulo(req.params.id)) == false){
         return "Articulo Inexistente";
     }
     return true;

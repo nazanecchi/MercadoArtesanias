@@ -34,6 +34,21 @@ function addContenido(req){
 
 }
 
+function getLastId(IDArticulo){
+    var sql = "SELECT ID FROM Contenidos WHERE IDArticulo = ?";
+    var values = [IDArticulo];
+    return new Promise((resolve, reject) => {
+        connection.query(sql, values, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                console.log(result);
+                resolve(result)
+            }
+            });
+    })
+}
+
 function updateContenido(req){
     var sql = "UPDATE Contenidos SET Descripcion = ?, IDArticulo = ?, IDCaracteristica = ? WHERE ID = ?";
     var values = [req.body.Descripcion, req.body.IDArticulo, req.body.IDCaracteristica, req.body.ID];
@@ -43,7 +58,7 @@ function updateContenido(req){
                 reject(err);
             } else {
                 console.log(`Contenido actualizado`);
-                resolve("Contenido actualizado")
+                resolve({message : 'Contenido actualizado'})
             }
             });
     })
@@ -72,6 +87,7 @@ async function validarContenido(IDContenido){
 
 module.exports = {
     getContenido,
+    getLastId,
     addContenido,
     updateContenido,
     validarContenido
