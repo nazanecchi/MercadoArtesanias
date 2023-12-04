@@ -18,7 +18,7 @@ function addFoto(data, req, nombre){
 
 function getFotos(req){
     var sql = "SELECT RutaFoto FROM Fotos WHERE IDArticulo = ? ORDER BY esPrincipal";
-    var values = [req.param.id];
+    var values = [req.params.id];
 
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {

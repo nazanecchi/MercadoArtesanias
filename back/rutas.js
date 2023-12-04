@@ -14,6 +14,7 @@ const multer = require('multer');
 const app = express();
 const cors = require('cors');
 const connection = require('./Models/connection.js');
+const path = require('path');
 
 app.use(express.urlencoded({extended:false}));
 app.use(morgan('dev'));
@@ -35,6 +36,11 @@ connection.connect(function(err) {
 //  put nombre      update
 //  delete nombre  delete
 
+
+
+const fileRouter = express.Router();
+fileRouter.use('/',  express.static(path.join(__dirname, '/FotosArticulos')));
+app.use('/FotosArticulos', fileRouter);
 
 //USUARIO
 app.post('/login', function(req, res){
@@ -171,7 +177,7 @@ const storage = multer.diskStorage({
         nombres = [];
   });
 
-  app.post('/allfotos', (req, res) => {
+  app.get('/allfotos/:id', (req, res) => {
        Fotos.getAll(req, res);
        nombres = [];
   });

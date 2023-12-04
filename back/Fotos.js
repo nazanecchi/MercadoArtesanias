@@ -35,6 +35,7 @@ async function getAll(req, res){
         const imagenes = [];
         console.log(result);
         result.forEach((foto) => {
+            console.log(foto);
             imagenes.push("FotosArticulos/" + foto.RutaFoto);
   });
         res.send(imagenes);
