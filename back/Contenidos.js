@@ -36,7 +36,7 @@ async function update(req, res){
 }
 
 async function validarContenido(req){
-    if(!req.body.Descripcion || !req.body.IDArticulo || !req.body.IDCaracteristica || !req.body.ID){
+    if(!('Descripcion' in req.body)|| !req.body.IDArticulo || !req.body.IDCaracteristica || !req.body.ID){
         return "Faltan campos obligatorios";
     }
     if(!(await ArticuloModels.validarArticulo(req.body.IDArticulo))){
