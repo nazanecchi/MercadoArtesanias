@@ -127,7 +127,7 @@ const storage = multer.diskStorage({
         nombres = [];
   });
 
-  app.get('/allfotos/:id', Middleware.validateToken, (req, res) => {
+  app.post('/allfotos/:id', Middleware.validateToken, (req, res) => {
        Fotos.getAll(req, res);
        nombres = [];
   });

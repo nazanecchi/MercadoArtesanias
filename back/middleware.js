@@ -6,11 +6,11 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 function validateToken(req, res, next){
-    if(!("token" in req.body)) return res.status(403).send("Acceso denegado");
+    if(!("Token" in req.body)) return res.status(403).send("Acceso denegado");
     const token = req.body.Token;
     jwt.verify(token, process.env.SECRET, (err, user) => {
         if(err){
-            return res.send("Acceso denegado");
+            return res.status(403).send("Acceso denegado");
         }else{
             next();
         }
