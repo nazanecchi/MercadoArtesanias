@@ -43,115 +43,65 @@ fileRouter.use('/',  express.static(path.join(__dirname, '/FotosArticulos')));
 app.use('/FotosArticulos', fileRouter);
 
 //USUARIO
-app.post('/login', function(req, res){
-    Middleware.login(req, res);
-});
+app.post('/login', Middleware.login);
 
-app.post('/oneusuario', function(req, res) { 
-    Usuarios.getOne(req, res);
-});
+app.post('/oneusuario', Middleware.validateToken, Usuarios.getOne);
 
-app.post('/allusuarios', function(req, res) { 
-    Usuarios.getAll(req, res);
-});
+app.post('/allusuarios', Middleware.validateToken, Usuarios.getAll);
 
-app.post('/usuario', function(req, res) {
-    Usuarios.add(req, res);
-});
+app.post('/usuario', Middleware.validateToken, Usuarios.add);
 
-app.put('/usuario', function(req, res) {
-    Usuarios.update(req, res);
-});
+app.put('/usuario', Middleware.validateToken, Usuarios.update);
 
-app.delete('/usuario', function(req, res) {
-    Usuarios.dlt(req, res);
-});
+app.delete('/usuario', Middleware.validateToken, Usuarios.dlt);
 
 //ARTICULOS
-app.post('/onearticulo', function(req, res) { 
-    Articulos.getOne(req, res);
-});
+app.post('/onearticulo', Middleware.validateToken, Articulos.getOne);
 
-app.post('/allarticulos', function(req, res) { 
-    Articulos.getAll(req, res);
-});
-app.post('/articulo', Articulos.add);
+app.post('/allarticulos', Middleware.validateToken, Articulos.getAll);
 
-app.put('/articulo', function(req, res) { 
-    Articulos.update(req, res);
-});
+app.post('/articulo', Middleware.validateToken, Articulos.add);
 
-app.delete('/articulo', function(req, res) { 
-    Articulos.dlt(req, res);
-});
+app.put('/articulo', Middleware.validateToken, Articulos.update);
+
+app.delete('/articulo', Middleware.validateToken, Articulos.dlt);
 
 //DIRECCIONES
 
-app.post('/onedireccion', function(req, res) { 
-    Direcciones.getOne(req, res);
-});
+app.post('/onedireccion', Middleware.validateToken, Direcciones.getOne);
 
-app.post('/alldirecciones', function(req, res) { 
-    Direcciones.getAll(req, res);
-});
+app.post('/alldirecciones', Middleware.validateToken, Direcciones.getAll);
 
-app.post('/direccion', function(req, res) { 
-    Direcciones.add(req, res);
-});
+app.post('/direccion', Middleware.validateToken, Direcciones.add);
 
-app.put('/direccion', function(req, res) { 
-    Direcciones.update(req, res);
-});
+app.put('/direccion', Middleware.validateToken, Direcciones.update);
 
-app.delete('/direccion', function(req, res) { 
-    Direcciones.dlt(req, res);
-});
+app.delete('/direccion', Middleware.validateToken, Direcciones.dlt);
 
 //CATEGORIAS
 
-app.post('/onecategoria', function(req, res) { 
-    Categorias.getOne(req, res);
-});
+app.post('/onecategoria', Middleware.validateToken, Categorias.getOne);
 
-app.post('/allcategorias', function(req, res) { 
-    Categorias.getAll(req, res);
-});
+app.post('/allcategorias', Middleware.validateToken, Categorias.getAll);
 
 //CARACTERISTICAS
 
-app.post('/onecaracteristica', function(req, res) {
-    Caracteristicas.getOne(req, res);
-});
+app.post('/onecaracteristica', Middleware.validateToken, Caracteristicas.getOne);
 
-app.post('/allcaracteristicas', function(req, res) {
-    Caracteristicas.getAll(req, res);
-});
+app.post('/allcaracteristicas', Middleware.validateToken, Caracteristicas.getAll);
 
 //CONTENIDOS
 
-app.post('/onecontenido', function(req, res) {
-    Contenido.getOne(req, res);
-});
+app.post('/onecontenido', Middleware.validateToken, Contenido.getOne);
 
-app.put('/contenido', function(req, res) { 
-    Contenido.update(req, res);
-});
-
-
-
+app.put('/contenido', Middleware.validateToken, Contenido.update);
 
 //COMPRAS
-app.post('/onecompra', function(req, res) { 
-    Compras.getOne(req, res);
-});
+app.post('/onecompra', Middleware.validateToken, Compras.getOne);
 
-app.post('/allcompras', function(req, res) {
-    Compras.getAll(req, res);
-});
+app.post('/allcompras', Middleware.validateToken, Compras.getAll);
 
-app.post('/compra', function(req, res) {
-    Compras.add(req, res);
-});
+app.post('/compra', Middleware.validateToken, Compras.add);
 
 // FOTOS
 
@@ -171,13 +121,13 @@ const storage = multer.diskStorage({
 
   const upload = multer({ storage: storage });
   
-  app.post('/fotos/:id', upload.array('archivos', 10), (req, res) => {
+  app.post('/fotos/:id', Middleware.validateToken,  upload.array('archivos', 10), (req, res) => {
     // El archivo se ha cargado con éxito, aquí puedes realizar otras acciones, como guardar información en la base de datos
         Fotos.add(req, res, nombres);
         nombres = [];
   });
 
-  app.get('/allfotos/:id', (req, res) => {
+  app.get('/allfotos/:id', Middleware.validateToken, (req, res) => {
        Fotos.getAll(req, res);
        nombres = [];
   });

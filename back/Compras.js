@@ -49,7 +49,7 @@ async function getAll(req, res){
   }
 
   async function validar(req){
-    if(!req.body.IDArticulo, !req.body.Cantidad, !req.body.IDUsuario, !req.body.IDDireccion, !req.body.MetodoPago)
+    if(!req.body.IDArticulo || !req.body.Cantidad || !req.body.IDUsuario || !req.body.IDDireccion || !req.body.MetodoPago)
     {
       return "Faltan campos obligatorios";
     }

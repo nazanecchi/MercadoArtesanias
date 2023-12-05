@@ -6,11 +6,11 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 function validateToken(req, res, next){
+    if(!("token" in req.body)) return res.status(403).send("Acceso denegado");
     const token = req.body.Token;
-    if(!token) res.send("Acceso denegado");
     jwt.verify(token, process.env.SECRET, (err, user) => {
         if(err){
-            res.send("Acceso denegado");
+            return res.send("Acceso denegado");
         }else{
             next();
         }
@@ -44,7 +44,8 @@ async function login(req, res) {
                 const Vuelta = {
                     mensaje: 'Usuario autenticado',
                     TipoUsuario: user.TipoUsuario,
-                    token: token
+                    token: token,
+                    ID: user.ID
                 }
                 res.json(Vuelta);
         } else {
