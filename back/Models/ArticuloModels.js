@@ -34,6 +34,11 @@ function getArticulos(req){
         sql += " AND PrecioActual < ?";
         values.push(req.body.PrecioMaximo);
     }
+    if(req.body.IDUsuario){
+        sql += " AND IDUsuario = ?";
+        values.push(req.body.IDUsuario);
+    }
+
     
 
     return new Promise((resolve, reject) => {
