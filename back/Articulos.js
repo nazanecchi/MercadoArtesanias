@@ -82,6 +82,7 @@ async function update(req, res){
     if(validacion == true){
         try{
             const result = await ArticuloModels.updateArticulo(req);
+            console.log("caca")
             res.send(result);
             return;
         } catch(err){

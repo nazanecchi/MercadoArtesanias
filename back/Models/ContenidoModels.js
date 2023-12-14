@@ -1,8 +1,19 @@
 const connection = require('./connection.js')
 
 function getContenido(req){
-    const sql = "SELECT * FROM Contenidos WHERE ID = ? AND ESTADO IS NULL"
-    const values = req.body.ID;
+    var sql = "SELECT * FROM Contenidos WHERE ESTADO is null"
+    var values = [];
+
+    //if(req.body.ID){
+    //    sql += " AND ID = ?";
+    //    values.push(req.body.ID);
+    //}
+
+    if(req.body.IDArticulo){
+        sql += " AND IDArticulo = ?";
+        values.push(req.body.IDArticulo);
+    }
+
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
@@ -10,7 +21,7 @@ function getContenido(req){
               reject(err);
               return;
             }
-            resolve(result[0])
+            resolve(result)
           });
     })
 }

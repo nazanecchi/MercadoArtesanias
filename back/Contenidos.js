@@ -4,7 +4,7 @@ const CaracteristicaModels = require('./Models/CaracteristicaModels');
 
 
 async function getOne(req, res){
-    if(!req.body.ID){
+    if(!req.body.IDArticulo){
         return res.status(400).send("Ingrese un ID");
     }
     try {

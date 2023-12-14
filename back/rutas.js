@@ -64,7 +64,7 @@ app.post('/articulo', Middleware.validateToken, Articulos.add);
 
 app.put('/articulo', Middleware.validateToken, Articulos.update);
 
-app.delete('/articulo', Middleware.validateToken, Articulos.dlt);
+app.put('/onearticulo', Middleware.validateToken, Articulos.dlt);
 
 //DIRECCIONES
 
