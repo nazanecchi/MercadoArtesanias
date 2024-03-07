@@ -6,8 +6,9 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 function validateToken(req, res, next){
-    if(!("Token" in req.body)) return res.status(403).send("Acceso denegado");
-    const token = req.body.Token;
+    const token = req.header('Token')
+    console.log(token)
+    if(!token) return res.status(403).send("Acceso denegado, no existe el token");
     jwt.verify(token, process.env.SECRET, (err, user) => {
         if(err){
             return res.status(403).send("Acceso denegado");
