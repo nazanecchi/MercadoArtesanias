@@ -49,7 +49,7 @@ app.post('/oneusuario', Middleware.validateToken, Usuarios.getOne);
 
 app.post('/allusuarios', Middleware.validateToken, Usuarios.getAll);
 
-app.post('/usuario', Middleware.validateToken, Usuarios.add);
+app.post('/usuario', Usuarios.add);
 
 app.put('/usuario', Middleware.validateToken, Usuarios.update);
 

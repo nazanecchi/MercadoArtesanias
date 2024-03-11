@@ -35,7 +35,7 @@ async function add(req, res) {
     if(validacionUsuario == true){
         try {
             const result = await UsuarioModels.addUsuario(req);
-            res.send(result); // Retorna el resultado
+            res.status(200).send({resultado: result}); // Retorna el resultado
           } catch (error) {
             res.status(500).send(error);
           }
