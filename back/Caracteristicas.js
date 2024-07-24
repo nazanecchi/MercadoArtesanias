@@ -7,7 +7,6 @@ async function getOne(req, res){
     if(!req.body.ID){
         res.state(400).send("Ingrese un ID");
     }
-    console.log(req.body.ID);
     try {
         const result = await CaracteristicaModels.getCaracteristica(req);
         res.status(200).json(result); // Retorna el resultado

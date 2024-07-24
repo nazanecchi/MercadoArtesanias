@@ -1,7 +1,6 @@
 const connection = require('./connection.js')
 
 function addFoto(data, req, nombre){
-    console.log(nombre);
     var values = [data.esPrincipal, req.params.id, nombre];
     var sql = "INSERT INTO Fotos (esPrincipal, IDArticulo, RutaFoto) VALUES (?, ?, ?)";
     return new Promise((resolve, reject) => {

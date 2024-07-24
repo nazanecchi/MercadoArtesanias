@@ -6,7 +6,6 @@ function getCompra(req){
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
-              console.log(err);
               reject(err);
               return;
             }
@@ -21,7 +20,6 @@ function getCompras(req){
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
-              console.log(err);
               reject(err);
               return;
             }

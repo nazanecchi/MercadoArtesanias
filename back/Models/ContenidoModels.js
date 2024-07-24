@@ -17,7 +17,6 @@ function getContenido(req){
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
-              console.log(err);
               reject(err);
               return;
             }
@@ -37,7 +36,6 @@ function addContenido(req){
             if (err) {
                 reject(err);
             } else {
-                console.log(`Contenido insertado`);
                 resolve("Contenido añadido")
             }
             });
@@ -53,7 +51,6 @@ function getLastId(IDArticulo){
             if (err) {
                 reject(err);
             } else {
-                console.log(result);
                 resolve(result)
             }
             });
@@ -68,7 +65,6 @@ function updateContenido(req){
             if (err) {
                 reject(err);
             } else {
-                console.log(`Contenido actualizado`);
                 resolve({message : 'Contenido actualizado'})
             }
             });
@@ -84,9 +80,7 @@ async function validarContenido(IDContenido){
     }
     try{
         const result = await getContenido(id)
-        console.log(result.Descripcion);
         if(!result){
-        console.log("No existe el usuario");
         return false;
         }else{
         return true;

@@ -9,7 +9,6 @@ async function getOne(req, res){
         const result = await DireccionModels.getDireccion(req);
         res.json(result); // Retorna el resultado
       } catch (error) {
-        console.log("error direcciones")
         res.status(500).send(error);
       }
 }
@@ -22,7 +21,6 @@ async function getAll(req, res){
         const result = await DireccionModels.getDirecciones(req);
         res.json(result); // Retorna el resultado
       } catch (error) {
-        console.log("error direcciones")
         res.status(500).send(error);
       }
 }
@@ -34,7 +32,6 @@ async function add(req, res){
         const result = await DireccionModels.addDireccion(req);
         res.send(result); // Retorna el resultado
       } catch (error) {
-        console.log("error direcciones")
         res.status(500).send(error);
       }
     }
@@ -56,7 +53,6 @@ async function update(req, res){
         const result = await DireccionModels.updateDireccion(req);
         res.send(result); // Retorna el resultado
       } catch (error) {
-        console.log("error direcciones")
         res.status(500).send(error);
       }
     }
@@ -80,7 +76,6 @@ async function dlt(req,res){
     const result = await DireccionModels.deleteDireccion(req.body.ID);
     res.send(result); // Retorna el resultado
   } catch (error) {
-    console.log("error direcciones")
     res.status(500).send(error);
   }
 }
