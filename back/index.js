@@ -1,138 +1,51 @@
-const Compras = require('./Compras.js');
-const Usuarios = require('./Usuarios.js');
-const Articulos = require('./Articulos.js');
-const Direcciones = require('./Direcciones.js');
-const Categorias = require('./Categorias.js');
-const Caracteristicas = require('./Caracteristicas.js');
-const Contenido = require('./Contenidos.js');
-const Fotos = require('./Fotos.js');
-const Middleware = require('./middleware.js');
 const express = require('express');
 const morgan = require('morgan');
-const uuid = require('uuid');
-const multer = require('multer');
-const app = express();
 const cors = require('cors');
-const connection = require('./Models/connection.js');
+const connection = require('./Models/connection');
+const userRoutes = require('./Routes/UsuariosRoutes');
+const articuloRoutes = require('./Routes/ArticulosRoutes');
+const direccionRoutes = require('./Routes/DireccionesRoutes');
+const categoriaRoutes = require('./Routes/CategoriasRoutes');
+const caracteristicaRoutes = require('./Routes/CaracteristicasRoutes');
+const contenidoRoutes = require('./Routes/ContenidosRoutes');
+const compraRoutes = require('./Routes/ComprasRoutes');
+const fotoRoutes = require('./Routes/FotosRoutes');
 const path = require('path');
 
-app.use(express.urlencoded({extended:false}));
+const app = express();
+
+app.use(express.urlencoded({ extended: false }));
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cors());
 
+// Conexión a la base de datos
 connection.connect(function(err) {
-    if (err) 
-    {
+    if (err) {
         console.error('Falló la conexión a la base de datos: ' + err.stack);
         return;
     }
     console.log('Conexión a la base de datos exitosa.');
 });
 
-//  get nombre  get element
-//  get nombres     get
-//  post nombre     add
-//  put nombre      update
-//  delete nombre  delete
+// Rutas estáticas para fotos
+app.use('/FotosArticulos', express.static(path.join(__dirname, 'FotosArticulos')));
 
+// Usar los routers
+app.use('/', userRoutes);
+app.use('/', articuloRoutes);
+app.use('/', direccionRoutes);
+app.use('/', categoriaRoutes);
+app.use('/', caracteristicaRoutes);
+app.use('/', contenidoRoutes);
+app.use('/', compraRoutes);
+app.use('/', fotoRoutes);
 
-
-const fileRouter = express.Router();
-fileRouter.use('/',  express.static(path.join(__dirname, '/FotosArticulos')));
-app.use('/FotosArticulos', fileRouter);
-
-//USUARIO
-app.post('/login', Middleware.login);
-
-app.post('/oneusuario', Middleware.validateToken, Usuarios.getOne);
-
-app.post('/allusuarios', Middleware.validateToken, Usuarios.getAll);
-
-app.post('/usuario', Usuarios.add);
-
-app.put('/usuario', Middleware.validateToken, Usuarios.update);
-
-app.delete('/usuario', Middleware.validateToken, Usuarios.dlt);
-
-//ARTICULOS
-app.post('/onearticulo', Middleware.validateToken, Articulos.getOne);
-
-app.post('/allarticulos', Middleware.validateToken, Articulos.getAll);
-
-app.post('/articulo', Middleware.validateToken, Articulos.add);
-
-app.put('/articulo', Middleware.validateToken, Articulos.update);
-
-app.put('/onearticulo', Middleware.validateToken, Articulos.dlt);
-
-//DIRECCIONES
-
-app.post('/onedireccion', Middleware.validateToken, Direcciones.getOne);
-
-app.post('/alldirecciones', Middleware.validateToken, Direcciones.getAll);
-
-app.post('/direccion', Middleware.validateToken, Direcciones.add);
-
-app.put('/direccion', Middleware.validateToken, Direcciones.update);
-
-app.delete('/direccion', Middleware.validateToken, Direcciones.dlt);
-
-//CATEGORIAS
-
-app.post('/onecategoria', Middleware.validateToken, Categorias.getOne);
-
-app.post('/allcategorias', Middleware.validateToken, Categorias.getAll);
-
-//CARACTERISTICAS
-
-app.post('/onecaracteristica', Middleware.validateToken, Caracteristicas.getOne);
-
-app.post('/allcaracteristicas', Middleware.validateToken, Caracteristicas.getAll);
-
-//CONTENIDOS
-
-app.post('/onecontenido', Middleware.validateToken, Contenido.getOne);
-
-app.put('/contenido', Middleware.validateToken, Contenido.update);
-
-//COMPRAS
-app.post('/onecompra', Middleware.validateToken, Compras.getOne);
-
-app.post('/allcompras', Middleware.validateToken, Compras.getAll);
-
-app.post('/compra', Middleware.validateToken, Compras.add);
-
-// FOTOS
-
-var nombres = []
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-      cb(null, 'FotosArticulos/'); // Carpeta donde se guardarán los archivos
-    },
-    filename: (req, file, cb) => {
-      // Genera un nombre de archivo único utilizando UUID
-      const extension = file.originalname.split('.').pop();
-      const nombreUnico = `${uuid.v4()}.${extension}`;
-      cb(null, nombreUnico);
-      nombres.push(nombreUnico);
-    },
-  });
-
-  const upload = multer({ storage: storage });
-  
-  app.post('/fotos/:id', Middleware.validateToken,  upload.array('archivos', 10), (req, res) => {
-    // El archivo se ha cargado con éxito, aquí puedes realizar otras acciones, como guardar información en la base de datos
-        Fotos.add(req, res, nombres);
-        nombres = [];
-  });
-
-  app.post('/allfotos/:id', Middleware.validateToken, (req, res) => {
-       Fotos.getAll(req, res);
-       nombres = [];
-  });
-
+// Manejo de errores
+app.use((req, res, next) => {
+    res.status(404).send('Ruta no encontrada');
+});
 
 app.listen(3005, () => {
     console.log('Servidor iniciado en el puerto 3005');
-  });
+});
