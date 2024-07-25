@@ -30,7 +30,7 @@ function getCompras(req){
 
 function addCompra(req){
     var sql = "INSERT INTO Compras(Monto, FechaYHora, MetodoPago, IDArticulo, Cantidad, IDUsuario, IDDireccion) VALUES (?, NOW(), ?, ?, ?, ?, ?); ";
-    var values = [req.body.Monto, req.body.MetodoPago, req.body.IDArticulo, req.body.Cantidad, req.body.IDUsuario, req.body.IDDireccion];
+    var values = [req.body.Monto, req.body.MetodoPago, req.body.IDArticulo, req.body.Cantidad, req.body.IDUsuario, 1000];
     connection.query(sql, values);
 } 
 
