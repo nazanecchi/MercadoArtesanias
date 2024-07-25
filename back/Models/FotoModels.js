@@ -2,7 +2,7 @@ const connection = require('./connection.js')
 
 function addFoto(data, req, nombre){
     var values = [data.esPrincipal, req.params.id, nombre];
-    var sql = "INSERT INTO Fotos (IDArticulo, RutaFoto) VALUES (?, ?, ?)";
+    var sql = "INSERT INTO Fotos (esPrincipal, IDArticulo, RutaFoto) VALUES (?, ?, ?)";
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
@@ -16,7 +16,7 @@ function addFoto(data, req, nombre){
 }
 
 function getFotos(req){
-    var sql = "SELECT RutaFoto FROM Fotos WHERE IDArticulo = ?";
+    var sql = "SELECT RutaFoto FROM Fotos WHERE IDArticulo = ? ORDER BY esPrincipal";
     var values = [req.params.id];
 
     return new Promise((resolve, reject) => {
