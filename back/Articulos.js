@@ -92,17 +92,17 @@ async function update(req, res){
 }
 
  async function dlt(req, res){
-    if(!req.body.ID){
+    if(!req.params.id){
         res.send("Ingrese un ID");
         return;
         }else{
-        if(await ArticuloModels.validarArticulo(req.body.ID)!=true){
+        if(await ArticuloModels.validarArticulo(req.params.id)!=true){
             res.send("ID invalido");
             return;
         }
       }
         try{
-            const result = await ArticuloModels.deleteArticulo(req.body.ID);
+            const result = await ArticuloModels.deleteArticulo(req.params.id);
             res.send(result);
             return;
         } catch(err){
