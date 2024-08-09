@@ -30,7 +30,6 @@ function getUsuario(req){
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
         if (err) {
-            console.log(err);
             reject(err); // Rechaza la promesa en caso de error
             return;
         }
@@ -44,7 +43,6 @@ function getUsuarios(){
         const sql = 'SELECT * FROM Usuarios WHERE ESTADO IS NULL';
         connection.query(sql, (err, result) => {
         if (err) {
-            console.log(err);
             reject(err); // Rechaza la promesa en caso de error
             return;
         }
@@ -65,8 +63,6 @@ function addUsuario(req){
         const values = [Nombre, Apellido, Mail, Username, Password, TipoUsuario];
         connection.query(sql, values, (err, result) => {
             if (err) {
-                console.log(err + "Soy yo");
-                console.log("Llego aca");
                 reject(err);
             } else {
                 console.log(`Usuario insertado`);
@@ -89,7 +85,6 @@ function updateUsuario(req){
         const values = [Nombre, Apellido, Mail, Username, Password, TipoUsuario, ID];
         connection.query(sql, values, (err, result) => {
         if (err) {
-            console.log(err);
             reject(err);
             return;
         } else {
@@ -106,13 +101,11 @@ function deleteUsuario(ID){
         const sql = `UPDATE Usuarios SET ESTADO = ? WHERE ID=? AND ESTADO IS NULL`;
         connection.query(sql, [Fecha, ID], (err, result) => {
             if (err) {
-              console.log(err);
               reject(err)
             }else{
                 if(result.affectedRows != 0){
                     resolve("Articulo eliminado")
                     }else{
-                    console.log(`ID incorrecto`);
                     resolve("ID incorrecto");
                     }
             }
@@ -129,7 +122,6 @@ async function validarUsuario(IDUsuario){
     try{
         const result = await getUsuario(id)
         if(!result){
-        console.log("No existe el usuario");
         return false;
         }else{
         return true;

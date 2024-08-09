@@ -6,8 +6,8 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();
 
 function validateToken(req, res, next){
-    if(!("Token" in req.body)) return res.status(403).send("Acceso denegado");
-    const token = req.body.Token;
+    const token = req.header('Token')
+    if(!token) return res.status(403).send("Acceso denegado, no existe el token");
     jwt.verify(token, process.env.SECRET, (err, user) => {
         if(err){
             return res.status(403).send("Acceso denegado");
@@ -25,7 +25,6 @@ async function login(req, res) {
     const sql = "SELECT * FROM Usuarios WHERE Username = ?";
     connection.query(sql, [Username], async (err, result) => {
         if (err) {
-            console.error(err);
             res.status(500).send('Error interno del servidor');
             return;
         }

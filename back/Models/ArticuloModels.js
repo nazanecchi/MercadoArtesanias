@@ -6,7 +6,6 @@ function getArticulo(req){
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
-              console.log(err);
               reject(err);
               return;
             }
@@ -131,7 +130,6 @@ async function validarArticulo(IDArticulo){
     try{
         const result = await getArticulo(id)
         if(!result){
-        console.log("No existe el usuario");
         return false;
         }else{
         return true;

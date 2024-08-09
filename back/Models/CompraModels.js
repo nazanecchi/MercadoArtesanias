@@ -6,7 +6,6 @@ function getCompra(req){
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
-              console.log(err);
               reject(err);
               return;
             }
@@ -21,7 +20,6 @@ function getCompras(req){
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
-              console.log(err);
               reject(err);
               return;
             }
@@ -31,8 +29,8 @@ function getCompras(req){
 }
 
 function addCompra(req){
-    var sql = "INSERT INTO Compras(Monto, FechaYHora, MetodoPago, IDArticulo, Cantidad, IDUsuario, IDDireccion) VALUES (?, NOW(), ?, ?, ?, ?, ?); ";
-    var values = [req.body.Monto, req.body.MetodoPago, req.body.IDArticulo, req.body.Cantidad, req.body.IDUsuario, req.body.IDDireccion];
+    var sql = "INSERT INTO Compras(Monto, FechaYHora, MetodoPago, IDArticulo, Cantidad, IDUsuario) VALUES (?, NOW(), ?, ?, ?, ?); ";
+    var values = [req.body.Monto, req.body.MetodoPago, req.body.IDArticulo, req.body.Cantidad, req.body.IDUsuario];
     connection.query(sql, values);
 } 
 

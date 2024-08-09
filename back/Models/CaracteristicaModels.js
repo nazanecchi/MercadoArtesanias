@@ -6,11 +6,9 @@ function getCaracteristica(req){
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
-              console.log(err);
               reject(err);
               return;
             }
-            console.log(result);
             resolve(result[0])
           });
     })
@@ -22,7 +20,6 @@ function getCaracteristicas(req){
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
-              console.log(err);
               reject(err);
               return;
             }
@@ -40,7 +37,6 @@ async function validarCaracteristica(IDCaracteristica){
   try{
       const result = await getCaracteristica(id)
       if(!result){
-      console.log("No existe la categoria");
       return false;
       }else{
       return true;

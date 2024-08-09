@@ -6,7 +6,6 @@ function getCategoria(req){
     return new Promise((resolve, reject) => {
         connection.query(sql, values, (err, result) => {
             if (err) {
-              console.log(err);
               reject(err);
               return;
             }
@@ -20,7 +19,6 @@ function getCategorias(req){
     return new Promise((resolve, reject) => {
         connection.query(sql, (err, result) => {
             if (err) {
-              console.log(err);
               reject(err);
               return;
             }
@@ -38,7 +36,6 @@ async function validarCategoria(IDCategoria){
   try{
       const result = await getCategoria(id)
       if(!result){
-      console.log("No existe la categoria");
       return false;
       }else{
       return true;

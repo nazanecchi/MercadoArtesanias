@@ -9,7 +9,6 @@ async function getOne(req, res){
         const result = await UsuarioModels.getUsuario(req);
         return res.status(200).json(result); // Retorna el resultado
       } catch (error) {
-        console.log(error);
         res.status(500).send(error);
       }
 }
@@ -35,7 +34,7 @@ async function add(req, res) {
     if(validacionUsuario == true){
         try {
             const result = await UsuarioModels.addUsuario(req);
-            res.send(result); // Retorna el resultado
+            res.status(200).send({resultado: result}); // Retorna el resultado
           } catch (error) {
             res.status(500).send(error);
           }
@@ -88,7 +87,6 @@ async function dlt(req, res){
         const result = await UsuarioModels.deleteUsuario(req.body.ID);
         return res.status(200).send(result); // Retorna el resultado
       } catch (error) {
-        console.log(error);
         return res.status(500).send(error);
       }
 }
@@ -105,7 +103,6 @@ async function usernameDisponible(username, id) {
 
     try {
         const result = await UsuarioModels.getUsuario(json);
-        console.log(result);
         if(result){
             return false;
         }
@@ -113,7 +110,6 @@ async function usernameDisponible(username, id) {
             return true;
         }
       } catch (error) {
-        console.log(error);
         res.status(500).send(error);
       }
 }
@@ -128,7 +124,6 @@ async function mailDisponible(mail, id) {
     }
     try {
         const result = await UsuarioModels.getUsuario(json);
-        console.log(result);
         if(result){
             return false;
         }
@@ -136,7 +131,6 @@ async function mailDisponible(mail, id) {
             return true;
         }
       } catch (error) {
-        console.log(error);
         res.status(500).send(error);
       }
 }

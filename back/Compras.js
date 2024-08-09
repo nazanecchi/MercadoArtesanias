@@ -69,9 +69,10 @@ async function getAll(req, res){
     if(await art.IDUsuario === req.body.IDUsuario){
       return "No puede comprarse a si mismo";
     }
+    /*
     if(await DireccionModels.validarDireccion(req.body.IDDireccion) == false){
       return "Direccion invalida";
-    }
+    }*/
     if(req.body.Cantidad > (art.Cantidad - art.Vendidos)){
       return "No hay suficiente stock";
     }

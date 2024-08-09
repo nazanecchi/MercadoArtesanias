@@ -39,7 +39,6 @@ async function add(req, res){
                 return;
             }
             try{
-                console.log(result);
                 const cont = {
                     body:{
                         IDArticulo: result,
@@ -47,15 +46,12 @@ async function add(req, res){
                     }
                 }
                 var resultado = await ContenidoModels.addContenido(cont);
-                console.log("HAsta aca ok 1");
                 resultado = await ContenidoModels.getLastId(cont.body.IDArticulo);
-                console.log("HAsta aca ok 2");
                 const dev = {
                     IDArticulo : result,
                     IDContenidos : resultado
                 }
                 res.send(dev);
-                console.log("HAsta aca ok 3")
                 return;
             } catch(err){
                 res.status(500).send(err);
@@ -82,7 +78,6 @@ async function update(req, res){
     if(validacion == true){
         try{
             const result = await ArticuloModels.updateArticulo(req);
-            console.log("caca")
             res.send(result);
             return;
         } catch(err){
@@ -97,17 +92,17 @@ async function update(req, res){
 }
 
  async function dlt(req, res){
-    if(!req.body.ID){
+    if(!req.params.id){
         res.send("Ingrese un ID");
         return;
         }else{
-        if(await ArticuloModels.validarArticulo(req.body.ID)!=true){
+        if(await ArticuloModels.validarArticulo(req.params.id)!=true){
             res.send("ID invalido");
             return;
         }
       }
         try{
-            const result = await ArticuloModels.deleteArticulo(req.body.ID);
+            const result = await ArticuloModels.deleteArticulo(req.params.id);
             res.send(result);
             return;
         } catch(err){

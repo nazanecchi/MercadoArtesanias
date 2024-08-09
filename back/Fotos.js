@@ -33,9 +33,7 @@ async function getAll(req, res){
     try {
         const result = await FotoModels.getFotos(req);
         const imagenes = [];
-        console.log(result);
         result.forEach((foto) => {
-            console.log(foto);
             imagenes.push("FotosArticulos/" + foto.RutaFoto);
   });
         res.send(imagenes);
@@ -45,8 +43,6 @@ async function getAll(req, res){
 }
 
 async function validar(req){
-    console.log(req.params.id);
-    console.log(req.files);
     if(!req.params.id || !req.files){
         return "Faltan campos obligatorios";
     }

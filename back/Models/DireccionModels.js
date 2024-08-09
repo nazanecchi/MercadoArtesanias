@@ -90,7 +90,6 @@ async function validarDireccion(IDDireccion){
   try{
       const result = await getDireccion(id)
       if(!result){
-      console.log("No existe el usuario");
       return false;
       }else{
       return true;
